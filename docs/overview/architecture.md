@@ -4,6 +4,10 @@ sidebar_position: 3
 
 # System Architecture 
 
+:::caution
+This documentation is under development and may be incomplete.
+:::
+
 SoftPack is built using a modern [microservices architecture](https://letmegooglethat.com/?q=what+is+microservices+architecture). Unlike monolithic
 monstrosities of the past, modern software systems are almost always built
 with smaller lightweight services that interoperate together and communicate 
@@ -77,7 +81,7 @@ flowchart TB
     softpack_clients -->|GraphQL / HTTP | softpack_core
     
     subgraph softpack_artifacts["SoftPack Artifacts (GitLab)"]
-      softpack_env(fa:fa-file-lines Envmoironment Definitions <br/> Spack environment files)
+      softpack_env(fa:fa-file-lines Environment Definitions <br/> Spack environment files)
       softpack_modules(fa:fa-box-archive Module Files <br/> For use with module command)
       softpack_images(fa:fa-box-open Container Images <br/> Docker/Singularity images)
       softpack_env --- softpack_images
@@ -166,7 +170,7 @@ flowchart TB
     class softpack_core dashed_container;
         
     subgraph softpack_artifacts["SoftPack Artifacts (GitLab)"]
-      softpack_env(fa:fa-file-lines Envmoironment Definitions <br/> Spack environment files)
+      softpack_env(fa:fa-file-lines Environment Definitions <br/> Spack environment files)
       softpack_modules(fa:fa-box-archive Module Files <br/> For use with module command)
       softpack_images(fa:fa-box-open Container Images <br/> Docker/Singularity images)
       softpack_env --- softpack_images
@@ -186,7 +190,7 @@ SoftPack Artifacts repository.
 
 ### SoftPack GraphQL
 
-SoftPack GrahQL implements the [GrahQL](https://graphql.org) service in 
+SoftPack GraphQL implements the [GraphQL](https://graphql.org) service in 
 SoftPack. GraphQL is used because of the flexibility it offers when performing 
 complex queries. Unlike REST APIs where multiple queries from multiple 
 endpoints often require complex logic to be embedded in client interfaces, 
@@ -214,7 +218,7 @@ flowchart TB
     classDef dashed_container fill:#FFFFFF, stroke-dasharray:4;
 
     subgraph softpack_artifacts["SoftPack Artifacts (GitLab)"]
-      softpack_env(fa:fa-file-lines Envmoironment Definitions <br/> Spack environment files)
+      softpack_env(fa:fa-file-lines Environment Definitions <br/> Spack environment files)
       softpack_modules(fa:fa-box-archive Module Files <br/> For use with module command)
       softpack_images(fa:fa-box-open Container Images <br/> Docker/Singularity images)
       softpack_env --- softpack_images
@@ -290,7 +294,7 @@ flowchart TB
     classDef dashed_container fill:#FFFFFF, stroke-dasharray:4;
 
     subgraph softpack_artifacts["SoftPack Artifacts (GitLab)"]
-      softpack_env(fa:fa-file-lines Envmoironment Definitions <br/> Spack environment files)
+      softpack_env(fa:fa-file-lines Environment Definitions <br/> Spack environment files)
       softpack_modules(fa:fa-box-archive Module Files <br/> For use with module command)
       softpack_images(fa:fa-box-open Container Images <br/> Docker/Singularity images)
       softpack_env --- softpack_images
@@ -406,11 +410,11 @@ sequenceDiagram
 | #   | Event                                                              | Description                                                                                                                                                |
 |-----|--------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | 1   | Create Environment                                                 | End-user sends a request to create a new environment using either the Web Client or the Command Line Interface.                                            |
-| 2   | GraphQL Mutation                                                   | SoftPack client sends the request to create a new environment using GrapQL Mutation over HTTP                                                              |
+| 2   | GraphQL Mutation                                                   | SoftPack client sends the request to create a new environment using GraphQL Mutation over HTTP                                                             |
 | 3   | Create Environment in SoftPack Artifacts repository                | SoftPack Core creates a new environment in SoftPack Artifacts repository                                                                                   | 
-| 4   | HTTP RESPONSE<br/>Status = OK                                      | SoftPack Artifacts repository returns ```OK``` to SoftPack Core                                                                                            |
-| 5   | HTTP RESPONSE<br/>Status = OK                                      | SoftPack Core returns ```OK``` to the client                                                                                                               |
-| 6   | WebSocket (WS) <br/> Status = In Progress                          | SoftPack Core sends ```In Progress``` status to the client in a WebSocket notification                                                                     | 
+| 4   | HTTP RESPONSE<br/>Status = OK                                      | SoftPack Artifacts repository returns `OK` to SoftPack Core                                                                                                |
+| 5   | HTTP RESPONSE<br/>Status = OK                                      | SoftPack Core returns `OK` to the client                                                                                                                   |
+| 6   | WebSocket (WS) <br/> Status = In Progress                          | SoftPack Core sends `In Progress` status to the client in a WebSocket notification                                                                         | 
 | 7   | Environment Created Webhook from SoftPack Artifacts repository     | SoftPack Artifacts repository sends a Webhook notification to the Softpack Builder that a new environment has been created                                 |
 | 8   | HTTP RESPONSE<br/>Status = OK                                      | SoftPack Builder returns OK to SoftPack Artifacts repository                                                                                               |
 | 9   | Push Module Definition from SoftPack Builder                       | SoftPack Builder pushes a new module definition file to SoftPack Artifacts repository                                                                      |
@@ -419,6 +423,6 @@ sequenceDiagram
 | 12  | HTTP RESPONSE<br/>Status = OK                                      | SoftPack Artifacts repository returns OK to SoftPack Builder                                                                                               |
 | 13  | Module & UImage Created Webhook from SoftPack Artifacts repository | SoftPack Artifacts repository sends a Webhook notification to the SoftPack Deploy Agent that a new module definition and container image have been created |
 | 14  | HTTP RESPONSE<br/>Status = OK                                      | SoftPack Deploy Agent returns OK to SoftPack Artifacts repository                                                                                          |                                              
-| 15  | WebSocket (WS) <br/> Status = OK                                   | SoftPack Deploy Agent sends ```OK``` to SoftPack Core once the module file and container images are deployed                                               |
-| 16  | WebSocket (WS) <br/> Status = OK                                   | SoftPack Core sends ```OK``` to SoftPack client that the new environment has been created                                                                  |
+| 15  | WebSocket (WS) <br/> Status = OK                                   | SoftPack Deploy Agent sends `OK` to SoftPack Core once the module file and container images are deployed                                                   |
+| 16  | WebSocket (WS) <br/> Status = OK                                   | SoftPack Core sends `OK` to SoftPack client that the new environment has been created                                                                      |
 | 17  | Environment Created                                                | SoftPack client updates the status and notifies that user that their new environment has been created                                                      |

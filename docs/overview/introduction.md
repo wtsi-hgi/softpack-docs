@@ -1,4 +1,12 @@
-# SoftPack
+---
+sidebar_position: 1
+---
+
+# Introduction 
+
+:::caution
+This documentation is under development and may be incomplete.
+:::
 
 **SoftPack** is an open-source software packaging platform for any operating
 system where Docker or Singularity are supported.
@@ -56,9 +64,22 @@ end-user.
 
 ## Requirements
 
-SoftPack runs on any POSIX-compliant operating system including any
-distribution of Linux, FreeBSD, and macOS. SoftPack also supports virtual
-machine environments including VirtualBox, Vagrant and VMware, provided the
+SoftPack runs on any POSIX-compliant operating system including any 
+distribution of Linux, FreeBSD, and macOS. SoftPack also supports virtual 
+machine environments including VirtualBox, Vagrant and VMware, provided the 
 operating system running on the virtual machine supports Docker or Singularity.
-SoftPack has been tested on OpenStack and will  support Google Cloud
+SoftPack has been tested on OpenStack and will  support Google Cloud 
 Platform (GCP) and Amazon Web Services (AWS).
+
+
+## Documentation
+
+This documentation repository serves a dual-purpose -- it provides the 
+specifications needed for the development phase of the project, but it also 
+includes user-centric documentation with tutorials and how-to guides. 
+Since the project is being developed with close cooperation with the 
+researchers in our scientific community, combining the developer's and 
+end-user's documentation serves a valuable purpose at this time. However, 
+once the project has matured, the end-user documentation will branch off and 
+will be hosted elsewhere.
+

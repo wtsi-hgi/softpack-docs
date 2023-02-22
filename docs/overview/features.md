@@ -4,6 +4,10 @@ sidebar_position: 2
 
 # Features
 
+:::caution
+This documentation is under development and may be incomplete.
+:::
+
 SoftPack supports the following list of features.
 
 ## Environment management
