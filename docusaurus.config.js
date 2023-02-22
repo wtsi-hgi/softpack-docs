@@ -7,14 +7,14 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
 /** @type {import('@docusaurus/types').Config} */
 const config = {
   title: 'SoftPack',
-  tagline: 'Software Packaging platform',
+  tagline: 'Software Packaging platform for reproducible research',
   favicon: 'img/favicon.ico',
 
   // Set the production url of your site here
-  url: 'https://ghdocs.internal.sanger.ac.uk',
+  url: 'https://wtsi-hgi.github.io/',
   // Set the /<baseUrl>/ pathname under which your site is served
   // For GitHub pages deployment, it is often '/<projectName>/'
-  baseUrl: '/softpack/',
+  baseUrl: '/softpack-docs/',
 
   // GitHub pages deployment config.
   // If you aren't using GitHub pages, you don't need these.
@@ -33,14 +33,7 @@ const config = {
   },
 
   stylesheets: [
-    'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css',
-    'https://altaf-ali.github.io/biobank-tools/css/termynal.css',
-    'https://altaf-ali.github.io/biobank-tools/css/custom.css'
-  ],
-
-  scripts: [
-    'https://altaf-ali.github.io/biobank-tools/js/termynal.js',
-    'https://altaf-ali.github.io/biobank-tools/js/custom.js'
+    'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css'
   ],
 
   presets: [
@@ -49,7 +42,7 @@ const config = {
       /** @type {import('@docusaurus/preset-classic').Options} */
       ({
         docs: {
-          routeBasePath: '/',
+          // routeBasePath: '/',
           showLastUpdateTime: true,
           sidebarPath: require.resolve('./sidebars.js'),
         },
@@ -75,7 +68,7 @@ const config = {
         items: [
           {
             type: 'doc',
-            docId: '/',
+            docId: '/category/overview',
             position: 'left',
             label: 'Documentation',
           },
@@ -93,9 +86,13 @@ const config = {
                     <a href='https://www.sanger.ac.uk' target='_blank'>Wellcome Sanger Institute</a>`,
       },
       prism: {
-        theme: lightCodeTheme,
+        theme: darkCodeTheme,
         darkTheme: darkCodeTheme,
       },
+      colorMode: {
+        defaultMode: 'light',
+        disableSwitch: false
+      }
     }),
 
     markdown: {
