@@ -26,7 +26,7 @@ you shell startup file (`.bashrc` or equivalent) so you don't have to do this
 manually each time you start a new shell.
 
 ```console
-$ module use --append /software/hgi/softpack/users/$USER
+$ module use --append /software/hgi/softpack/modules/users/$USER
 ```
 
 The `module use` command can also be used to verify that `module` knows about 
