@@ -8,81 +8,197 @@ sidebar_position: 1
 This documentation is under development and may be incomplete.
 :::
 
-
-This is a sneak-preview of the getting started guide. A detailed guide will be 
-available in [Milestone 1](/docs/reference/development_roadmap/#milestone-1)
-
 ### Using a SoftPack environment
 
-Let's consider the scenario that you've somehow acquired a SoftPack environment
-that you'd like to use for running some analysis in R.
+This tutorial describes how to use a previously created SoftPack environment
+for running Python, R or RStudio.
 
-The first step is to see what environments are available to you. 
+SoftPack environments are made available through the `module` command. It's the 
+only command you need to learn in order to use a SoftPack environment. 
+Documentation for the `module` command is available at the [Environment Modules](https://modules.sourceforge.net) 
+site if you're new to modules.
 
-:::info
-The exact mechanics of how modules appear in your shell are not covered in this
-guide yet.
-:::
 
-### The module command
+The first step is to tell the `module` command where to look for your 
+environments. The following `module use` command adds the directory where 
+your modules are installed. It's generally a good idea to add this command to 
+you shell startup file (`.bashrc` or equivalent) so you don't have to do this
+manually each time you start a new shell.
 
-The `module` command is the only command you need to learn in order to use an 
-existing SoftPack environment.
+```console
+$ module use --append /software/hgi/softpack/users/$USER
+```
 
-To get a list of all available modules, type `module avail`
+The `module use` command can also be used to verify that `module` knows about 
+all the directories where your modules are installed.
 
-```bash
+```console
+$ module use
+Search path for module files (in search order):
+  /etc/environment-modules/modules
+  /usr/share/modules/versions
+  /usr/share/modules/modulefiles
+  /software/hgi/softpack/modules/users/aa27
+```
+
+You can now run `module avail` to get a list of all environments available to 
+you.
+
+```console
 $ module avail
--------------------------- /opt/softpack/modules ---------------------------
-aa27/cairo/1  aa27/cairo/2  
+--------------------- /usr/share/modules/modulefiles --------------------- 
+dot  module-git  module-info  modules  null  use.own
+
+---------------- /software/hgi/softpack/modules/users/aa27 ----------------
+seurat5/1.0
 ```
 
-In the example above, there are two versions of the `aa27/cairo` environment 
-available. The version number is automatically incremented when changes are 
-made to an environment. This ensures that users can rely on a stable 
-environment when using a specific version number.
+There are two additional `module` subcommands worth noting here.
 
-Having SoftPack environments version controlled the same way you use Git for
-version controlling your code, allows the environments to be updated without 
-running the risk of breaking any existing analysis that relies on a previous 
-working version of the environment.
+- `module whatis` gives you a brief synopsis of what the module is about.
+- `module help` describes the module in more detail.
 
-Once you've identified the environment to use, you can load it with 
-`module load` command.
+#### module whatis
 
-```bash
-$ module load aa27/cairo/2 
+```console
+$ module whatis seurat5
+---------------- /software/hgi/softpack/modules/users/aa27 ----------------
+         seurat5/1.0: Softpack pilot with seurat 5, bpcells and monocle3
 ```
 
-Although not necessary, you can show a list of all modules currently loaded
-using the `module list` command.
+#### module help
 
-```bash
+```console
+$ module help seurat5
+-------------------------------------------------------------------
+Module Specific Help for /software/hgi/softpack/modules/users/aa27/seurat5/1.0:
+
+description: Softpack pilot with seurat 5, bpcells and monocle3
+build:
+  id: 6cb0fb19-19c2-4cc6-8e4a-9587cca739a0
+  image: /software/hgi/softpack/images/6cb0fb19-19c2-4cc6-8e4a-9587cca739a0.sif
+  created: 2023-04-28 16:34:42
+  updated: 2023-04-28 22:15:44
+packages:
+  - r-afex
+  - r-affy
+  - r-affyio
+  - r-annotationfilter
+:  
+```
+
+#### Loading a module
+
+To load a module, simply run `module load` with the name of an available module.
+
+```console
+$ module load seurat5
+Loading seurat5/1.0
+  Loading requirement: /software/modules/ISG/singularity/3.10.0
+```
+
+You can get a list of all loaded modules using the `module list` command.
+
+```console
 $ module list
 Currently Loaded Modulefiles:
-1) aa27/cairo/2
+ 1) /software/modules/ISG/singularity/3.10.0   2) seurat5/1.0
+
 ```
 
-Now that the module is loaded, you can run R and everyone's happy.
+Now that the module is loaded, you can run Python, R or RStudio.
 
-```R
-$ R
+### Running RStudio
 
-R version 4.2.2 (2022-10-31) -- "Innocent and Trusting"
-Copyright (C) 2022 The R Foundation for Statistical Computing
-Platform: x86_64-pc-linux-gnu (64-bit)
+SoftPack environments that include RStudio will include a new `rstudio` command
+that starts a batch job on your high performance cluster.
 
-R is free software and comes with ABSOLUTELY NO WARRANTY.
-You are welcome to redistribute it under certain conditions.
-Type 'license()' or 'licence()' for distribution details.
+```console
+$ rstudio
+Usage: rstudio [OPTIONS] COMMAND [ARGS]...
 
-R is a collaborative project with many contributors.
-Type 'contributors()' for more information and
-'citation()' on how to cite R or R packages in publications.
+Options:
+  --help  Show this message and exit.
 
-Type 'demo()' for some demos, 'help()' for on-line help, or
-'help.start()' for an HTML browser interface to help.
-Type 'q()' to quit R.
+Commands:
+  list   List running RStudio servers.
+  start  Start RStudio server.
+  stop   Stop RStudio server.
+```
 
->
+To start a new RStudio session, use the `rstudio start` command. The 
+`rstudio start` command supports the following optional arguments.
+
+```console
+$ rstudio start --help
+Usage: rstudio start [OPTIONS]
+
+  Start RStudio server.
+
+Options:
+  --home PATH            home directory inside the container.  [default:
+                         /nfs/users/nfs_a/aa27]
+  -M MB                  sets the memory limit for the job (in MB).  [default:
+                         15000]
+  -n MIN[,MAX]           submits a parallel job and specifies the number of
+                         tasks in the job.  [default: 2]
+  -o, --output FILENAME  output filename.  [default: rstudio_session.log]
+  --pwd PATH             initial working directory inside the container.
+                         [default: /nfs/users/nfs_a/aa27]
+  -q, --queue QUEUE      submits the job to the specified queue.
+  --r-libs-user PATH     specifies additional directories for R packages.
+  --help                 Show this message and exit.
+```
+
+:::info
+You can change the home directory used inside RStudio using `--home` argument
+or by changing you current directory before starting the RStudio session.
+:::
+
+Running `rstudio start` submits a batch job, starts RStudio server and provides 
+you with instructions on how to connect to your RStudio session as shown below.
+
+```console
+$ rstudio start
+LSF job options:
+
+io:
+  errorAppendFile: rstudio_session.log
+  outputAppendFile: rstudio_session.log
+limit:
+  memLimit: 15000
+properties:
+  jobName: aa27/rstudio-server
+resource:
+  numTasks: '2'
+  resReq: select[model==Intel_Platinum && mem>15000] rusage[tmp=5000, mem=15000] span[hosts=1]
+
+Job <22845162> is submitted to default queue <normal>.
+
+Waiting for RStudio server to start ...
+
+To access the server, open one of these URLs in a browser and login with the credentials below:
+
+	http://node-10-3-4.internal.sanger.ac.uk:33025
+	http://172.27.224.27:33025
+
+	username: aa27
+	password: iJX7MCV1w+6IPyXcYs9H
+```
+
+Once you're finished with RStudio, use the `rstudio stop` command to terminate
+the session.
+
+```console
+$ rstudio stop
+Job <22845162> is being terminated
+```
+
+You can also use the `rstudio list` command to get a list of all running 
+sessions.
+
+```console
+$ rstudio list
+JOBID   USER    STAT  QUEUE      FROM_HOST   EXEC_HOST   JOB_NAME   SUBMIT_TIME
+22845162 aa27    RUN   normal     hgi-farm5   node-10-3-4:node-10-3-4 aa27/rstudio-server May  2 11:21
 ```
