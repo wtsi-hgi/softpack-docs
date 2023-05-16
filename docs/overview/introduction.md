@@ -40,8 +40,8 @@ or both.
   own.
 
 - [Docker](https://www.docker.com), [Singularity](https://docs.sylabs.io/), and
-  [Podman](https://podman.io) offer unmatched stability and reproducibility by
-- using containerization but with the added cost of steeper learning curve.
+  [Podman](https://podman.io) offer unmatched stability and reproducibility by 
+  using containerization but with the added cost of steeper learning curve.
 
 - A number of home-grown tools have surfaced over the years but no solution
   offers stability, flexibility and ease of use in a multi-user shareable

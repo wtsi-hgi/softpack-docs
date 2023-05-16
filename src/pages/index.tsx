@@ -18,7 +18,7 @@ function HomepageHeader() {
           <Link
             className="button button--secondary button--lg"
             to="/docs/tutorials/getting_started">
-            SoftPack Tutorial - 5min ⏱️
+            SoftPack Tutorial - 5 min ⏱️
           </Link>
         </div>
       </div>

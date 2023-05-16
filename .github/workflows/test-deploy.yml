@@ -19,4 +19,7 @@ jobs:
       - name: Install dependencies
         run: yarn install --frozen-lockfile
       - name: Test build website
+        env:
+          URL: https://wtsi-hgi.github.io/
+          BASE_URL: /softpack-docs/
         run: yarn build
