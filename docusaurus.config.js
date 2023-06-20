@@ -82,8 +82,8 @@ const config = {
       footer: {
         style: 'dark',
         copyright: `Copyright © ${new Date().getFullYear()}  
-                    Human Genetics Informatics @ 
-                    <a href='https://www.sanger.ac.uk' target='_blank'>Wellcome Sanger Institute</a>`,
+        Genome Research Ltd.
+                    `,
       },
       prism: {
         theme: darkCodeTheme,

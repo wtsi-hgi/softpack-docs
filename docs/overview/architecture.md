@@ -42,7 +42,7 @@ or `REST / HTTP` are read as `HTML` over `HTTP`, and `REST` over `HTTP`
 respectively.
 
 1. Error conditions are excluded from the diagrams for brevity. The diagrams 
-do not mean that every service will always return `ststus = OK`. Some 
+do not mean that every service will always return `status = OK`. Some 
 operations will undoubtedly return errors but when a service encounters an 
 error, it will propagate the error upwards in the stack and notify the caller
 or log the event if necessary. 
