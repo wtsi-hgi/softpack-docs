@@ -17,7 +17,23 @@ It is recommended that those following these instructions are comfortable with
 using a unix-like terminal interface, and have some experience administering a
 linux environment.
 
+The current automated build process is not intended to be used to create an
+individual instance, and as such will require some modification.
+
 ## The Steps
+
+### Generate Application Credentials
+
+To build and set-up OpenStack VMs you'll need to generate some credntials:
+
+https://theta.internal.sanger.ac.uk/identity/application_credentials/
+
+Select `Create Application Credential`, give it a name, and click `Create Application Credential`.
+
+Make note of the ID and Secret values, as you will need them later.
+
+NB: The site will not be able to retrieve the secret for you if you lose it. If
+that happens you'll need to generate a new one.
 
 ### Clone Infrastructure
 
@@ -27,7 +43,7 @@ repo:
 
 ```git clone https://gitlab.internal.sanger.ac.uk/hgi-projects/softpack/infrastructure/```
 
-…then after entering the newly creating directory (```cd infrastructure```),
+…then after entering the newly creating directory (`cd infrastructure`),
 checkout the development branch:
 
 ```git checkout develop```
@@ -37,66 +53,97 @@ checkout the development branch:
 The next step is to modify several of the configuration files in order to create
 a personal instance:
 
-In `terraform/terraform.tfvars`, add the following lines to the end of the file:
-
-```
-ARTIFACTS_ROOT = "./"
-ANSIBLE_INVENTORY = "/path/to/softpack/infrastructure/terraform/ansible/hosts.yml"
-ENVIRONMENT = "development"
-SSH_KEY = "~/.ssh/id_rsa"
-SSH_PUBLIC_KEY = "~/.ssh/id_rsa.pub"
-```
-
-You may need to replace the values of SSH_KEY and SSH_PUBLIC with the paths to
-your own keys, and make sure the `ANSIBLE_INVENTORY` accurately reflects where
-you cloned the repo (the hosts.yml file will not currently exist).
-
-NB: If you do not already have SSH keys created, you can do so with the
-`ssh-keygen` command.
-
 In `terraform/backend.tf`, replace the `"http"` value with `"local"`.
 
-In `terraform/builder.tf`, in the `openstack_compute_instance_v2` resource,
-you'll need to replace the key_pair line with the following:
+In `terraform/openstack.tf`, replace the locals section with the following:
 
 ```
-key_pair    = openstack_compute_keypair_v2.keypair.name
+locals {
+  openstack = {
+    keypair                = join("-", [var.name, var.ENVIRONMENT])
+    auth_url               = var.openstack_auth_url
+    application_credential = {
+        id = var.openstack_application_credential_id
+        secret = var.openstack_application_credential_secret
+    }
+  }
+}
 ```
 
-…and add the following section at the end:
+…and add the following to the bottom of the file:
 
 ```
 resource "openstack_compute_keypair_v2" "keypair" {
-  name       = "mercury-USERNAME-keypair"
+  name       = local.openstack.keypair
   public_key = file(var.SSH_PUBLIC_KEY)
 }
 ```
 
-The name needs to be unique, so you may need to change this if it conflicts with
-an existing keypair setup.
+In `terraform/variables.tf`, you'll want to make the following changes:
 
-In `terraform/frontend.tf`, we need to make a similar change to the last, in the
-`openstack_compute_instance_v2` resource, you'll need to replace the key_pair
-line with the following:
+Change the default value of the `name` variable from "softpack" to
+"softpack-USERNAME" (where USERNAME is your username).
 
-```
-key_pair    = openstack_compute_keypair_v2.keypair.name
-```
+Change the default value of `subdomain` to match that of `name`.
 
-In `terraform/openstack.tf`, you'll need to remove the following key_pair line:
+Add a default value for `ANSIBLE_INVENTORY` set to `"./ansible/hosts.yml"`.
 
-```
-  keypair                = join("-", [var.name, var.ENVIRONMENT])
-```
+Add a default value for `SSH_KEY` set to `"~/.ssh/id_rsa"`.
 
-Lastly, in the `terraform/variables.tf` file, you'll need to make sure that the
-subdomain default value is unique, and will need to add the following lines to
-the end of the file:
+NB: You may need to replace the default value of SSH_KEY with the path to your
+own keys if it is in a different location, or is of a different key type. If you
+do not already have SSH keys created, you can do so with the `ssh-keygen`
+command.
+
+Add a default value for `ENVIRONMENT` set to `"development"`.
+
+Add the following to the bottom of the file:
 
 ```
 variable "SSH_PUBLIC_KEY" {
   type = string
+  default = "~/.ssh/id_rsa.pub"
 }
+
+variable "openstack_auth_url" {
+  type = string
+  default = "https://theta.internal.sanger.ac.uk:5000"
+}
+
+variable "openstack_application_credential_id" {
+  type = string
+  default = "YOUR_CREDENTIAL_SECRET"
+}
+
+variable "openstack_application_credential_secret" {
+  type = string
+  default = "YOUR_CREDENTIAL_SECRET"
+}
+```
+
+…filling in your credentials that you generated earlier, and making sure the
+`SSH_PUBLIC_KEY` path matches that of the accompanying public key to the
+`SSH_KEY` you supplied earlier.
+
+Lastly, in the `terraform/ansible/roles/softpack_builder/tasks/main.yml` file,
+**remove** the following lines:
+
+```
+- name: Import GPG key
+  vars:
+    key: /tmp/softpack.pgp
+  block:
+    - name: Copy GPG key
+      ansible.builtin.copy:
+        src: "{{ lookup('ansible.builtin.env', 'SPACK_KEY') }}"
+        dest: "{{ key }}"
+        mode: u=rw,g=-,o=-
+
+    - name: Import GPG key
+      ansible.builtin.shell: |
+        SPACK_GNUPGHOME={{ builder.gpg }} {{ spack_path }}/bin/spack gpg trust {{ key }}
+      args:
+        creates: "{{ builder.gpg }}/trustdb.gpg"
 ```
 
 ## Building the VM
@@ -108,21 +155,6 @@ and [Ansible](https://www.ansible.com/) installed. It is recommended to install
 ```
 pip install ansible
 ```
-
-With the tools installed, you'll need to export some environmental variables
-that terraform requires:
-
-```
-export VAULT_ADDR="https://vault.internal.sanger.ac.uk"
-export VAULT_TOKEN="TOKEN_HERE"
-```
-
-…replacing the `VAULT_TOKEN` value with your own.
-
-NB: You can find your token by logging in to [The
-Vault](https://vault.internal.sanger.ac.uk/) and selecting `Copy token` from the
-top-right menu. If you have not previously generated a token, you will need to
-do so now.
 
 Once done, make sure that you're in the `infrastructure/terraform` directory,
 and run the following two commands to provision the VM for SoftPack:
@@ -138,14 +170,17 @@ place.
 ## Installing the Software
 
 While still in the `infrastructure/terraform` directory, you can run the
-following command to set-up the newly provisioned VM with the necessary software
-and configuration:
+following command to set-up the newly provisioned VMs with the necessary
+software and configuration:
 
 ```
-ansible-playbook --inventory ansible/hosts.yml --limit builder ansible/main.yml
+ansible-playbook --inventory ansible/hosts.yml ansible/main.yml
 ```
 
-NB: This will most likely take a few minutes
+You will need to response 'yes' to each of the three SSH authenticity checks,
+but should otherwise not be required to interact with the process.
+
+NB: This will most likely take a few minutes.
 
 ## After Installation Modification
 
@@ -153,11 +188,8 @@ Once the initial software configuration is done, you'll need to log in to the
 machine to make some changes:
 
 ```
-ssh ubuntu@IP_ADDRESS
+ssh ubuntu@builder.softpack-USERNAME.hgi-dev.sanger.ac.uk
 ```
-
-The IP Address can either be found in the `terraform` output, or in the
-`terraform/ansible/hosts.yml` file, in the `builder` section.
 
 Once logged in, you'll need to modify two files. The first in the softpack
 builder configuration file, located at
