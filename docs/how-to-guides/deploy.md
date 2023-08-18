@@ -79,6 +79,10 @@ resource "openstack_compute_keypair_v2" "keypair" {
 }
 ```
 
+An optional change would be in `terraform/terraform.tfvars`, in which you may
+wish to replace the builder flavour (`m4.medium`) with `m2.medium` as there are
+generally more available.
+
 In `terraform/variables.tf`, you'll want to make the following changes:
 
 Change the default value of the `name` variable from "softpack" to
