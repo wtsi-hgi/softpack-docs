@@ -195,8 +195,15 @@ machine to make some changes:
 ssh ubuntu@builder.softpack-USERNAME.hgi-dev.sanger.ac.uk
 ```
 
-Once logged in, you'll need to modify two files. The first in the softpack
-builder configuration file, located at
+Once logged in, you'll need to create a directory and modify some files.
+
+Create the needed directory with the following command:
+
+```
+mkdir /opt/softpack/gpg/
+```
+
+The first file to edit is in the softpack builder configuration file, located at
 `/opt/softpack/builder/softpack_builder/config/conf/config.yml`. In the `vault`
 section, You'll need to fill in the details for the URL, Path, and Token for the
 vault, either with real values, or dummy ones such as the following:
