@@ -218,6 +218,13 @@ lines:
           spack: v0.20.0
 ```
 
+In the file `/lib/systemd/system/prefect-agent.service`, you'll need to append
+the spack path to the `Environment` line, like so:
+
+```
+Environment=PATH=/opt/softpack/builder/.venv/bin:/usr/local/bin:/usr/bin:/opt/spack/v0.20.1/bin
+```
+
 Lastly, in the `/opt/softpack/builder/softpack_builder/singularity.py` file,
 find and delete the following line:
 
@@ -225,12 +232,14 @@ find and delete the following line:
 				file.writelines(commands)
 ```
 
-## Restart the SoftPack Service
+## Restart the SoftPack Services
 
-With the changes made, you should now be able to start the SoftPack Builder
-Service, with the following command:
+With the changes made, you should now be able to restart both the Prefect Agent
+and SoftPack Builder services, with the following commands:
 
 ```
+sudo systemctl daemon-reload
+sudo systemctl restart prefect-agent
 sudo systemctl restart softpack-builder
 ```
 
