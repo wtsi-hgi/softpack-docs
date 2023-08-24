@@ -197,12 +197,9 @@ ssh ubuntu@builder.softpack-USERNAME.hgi-dev.sanger.ac.uk
 
 Once logged in, you'll need to modify two files. The first in the softpack
 builder configuration file, located at
-`/opt/softpack/builder/softpack_builder/config/conf/config.yml` and requires the
-following changes:
-
-In the `vault` section, You'll need to fill in the details for the URL, Path,
-and Token for the vault, either with real values, or dummy ones such as the
-following:
+`/opt/softpack/builder/softpack_builder/config/conf/config.yml`. In the `vault`
+section, You'll need to fill in the details for the URL, Path, and Token for the
+vault, either with real values, or dummy ones such as the following:
 
 ```
 vault:
@@ -211,12 +208,14 @@ vault:
   token: something
 ```
 
-In the `spack->manifest->spack->container->images` section, remove the following
-two lines:
+For the file `~/.softpack/builder/config.yml`, in the
+`spack->manifest->spack->container->images` section, remove the following three
+lines:
 
 ```
-          build: spack/ubuntu-focal:v0.20.1
-          final: ubuntu:20.04
+        images:
+          os: ubuntu:20.04
+          spack: v0.20.0
 ```
 
 Lastly, in the `/opt/softpack/builder/softpack_builder/singularity.py` file,
