@@ -284,9 +284,9 @@ softpack-builder environment build --name NAME_OF_INSTALL /path/to/softpack/file
 
 NB: You must execute that command from the `/opt/softpack/builder/` directory.
 
-The progress of the build can be viewed by accessing the IP address of your VM
-in a browser, which will bring up the Prefect Flow interface, which also allows
-you to view the logs.
+The progress of the build can be viewed by accessing the IP/host address of your
+builder VM in a browser, which will bring up the Prefect Flow interface, which
+also allows you to view the logs.
 
 If you previously entered dummy vault information in the softpack configuration file, the
 image will be built, but will not be uploaded anywhere; the location of the
