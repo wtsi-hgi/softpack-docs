@@ -160,7 +160,7 @@ and [Ansible](https://www.ansible.com/) installed. It is recommended to install
 pip install ansible
 ```
 
-Once done, make sure that you're in the `infrastructure/terraform` directory,
+Once done, make sure that you're in the `terraform` sub-directory,
 and run the following two commands to provision the VM for SoftPack:
 
 ```
@@ -173,7 +173,7 @@ place.
 
 ## Installing the Software
 
-While still in the `infrastructure/terraform` directory, you can run the
+While still in the `terraform` sub-directory, you can run the
 following command to set-up the newly provisioned VMs with the necessary
 software and configuration:
 
