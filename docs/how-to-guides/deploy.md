@@ -160,6 +160,16 @@ and [Ansible](https://www.ansible.com/) installed. It is recommended to install
 pip install ansible
 ```
 
+Next, you'll need to set up the environmental variables for your vault token.
+Login to the [vault](https://vault.internal.sanger.ac.uk/) and you can copy your
+vault token from the top-right drop-down menu. Then, in your terminal, run the
+following:
+
+```
+export VAULT_ADDR="https://vault.internal.sanger.ac.uk"
+export VAULT_TOKEN="YOUR_TOKEN_HERE"
+```
+
 Once done, make sure that you're in the `terraform` sub-directory,
 and run the following two commands to provision the VM for SoftPack:
 
