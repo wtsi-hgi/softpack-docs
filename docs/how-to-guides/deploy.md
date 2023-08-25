@@ -249,6 +249,11 @@ find and delete the following line:
 				file.writelines(commands)
 ```
 
+NB: This is a temporary work-around, as the builder is currently in development.
+This should not be required in the future, and this line may not exist if this
+document hasn't been updated to reflect the latest state of the builder
+development.
+
 ## Restart the SoftPack Services
 
 With the changes made, you should now be able to restart both the Prefect Agent
@@ -278,7 +283,6 @@ softpack-builder environment build --name NAME_OF_INSTALL /path/to/softpack/file
 ```
 
 NB: You must execute that command from the `/opt/softpack/builder/` directory.
-
 
 The progress of the build can be viewed by accessing the IP address of your VM
 in a browser, which will bring up the Prefect Flow interface, which also allows
