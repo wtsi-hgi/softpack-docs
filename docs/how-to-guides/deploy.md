@@ -235,6 +235,10 @@ lines:
           spack: v0.20.0
 ```
 
+NB: These lines are default spack configuration that conflicts with our custom
+configuration in SoftPack. This may be fixed in the infrastructure repo at some
+point, and so may not need doing.
+
 In the file `/lib/systemd/system/prefect-agent.service`, you'll need to append
 the spack path to the `Environment` line, like so:
 
