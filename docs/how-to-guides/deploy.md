@@ -235,9 +235,9 @@ lines:
           spack: v0.20.0
 ```
 
-NB: These lines are default spack configuration that conflicts with our custom
-configuration in SoftPack. This may be fixed in the infrastructure repo at some
-point, and so may not need doing.
+NB: These lines are default spack configuration entries that conflicts with our
+custom configuration in SoftPack. This may be fixed in the infrastructure repo
+at some point, and so may not need doing.
 
 In the file `/lib/systemd/system/prefect-agent.service`, you'll need to append
 the spack path to the `Environment` line, like so:
@@ -271,7 +271,12 @@ sudo systemctl restart softpack-builder
 
 ## Building Software
 
-You should now be able to build software.
+You should now be able to build software. If you previously entered dummy
+information for the vault configuration, then you are safe to test and build
+without affecting anything outside of your instance. This means that the
+Singularity images built will not be pushed to a container registry (the
+location of the built image can be found at the end of the log, look for the
+line containing the text `Build complete`).
 
 First, you need to activate the correct environment, which you can do with the
 following command:
@@ -291,7 +296,3 @@ NB: You must execute that command from the `/opt/softpack/builder/` directory.
 The progress of the build can be viewed by accessing the IP/host address of your
 builder VM in a browser, which will bring up the Prefect Flow interface, which
 also allows you to view the logs.
-
-If you previously entered dummy vault information in the softpack configuration file, the
-image will be built, but will not be uploaded anywhere; the location of the
-image will be in the log.
